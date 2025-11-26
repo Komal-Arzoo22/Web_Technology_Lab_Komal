@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Calculator</title>
+  <style>
+    body {
+      background: #f0f2f5;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .calculator {
+      background: #222;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .display {
+      width: 220px;
+      height: 50px;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: right;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: white;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 55px);
+      gap: 10px;
+    }
+    button {
+      font-size: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #444;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #666;
+    }
+    .equal {
+      background: #0078d7;
+    }
+    .equal:hover {
+      background: #005fa3;
+    }
+    .clear {
+      background: #e74c3c;
+    }
+    .clear:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" class="display" id="display" disabled />
+    <div class="buttons">
+      <button class="clear" data-action="clear">C</button>
+      <button data-value="/">÷</button>
+      <button data-value="*">×</button>
+      <button data-action="delete">⌫</button>
+
+      <button data-value="7">7</button>
+      <button data-value="8">8</button>
+      <button data-value="9">9</button>
+      <button data-value="-">−</button>
+
+      <button data-value="4">4</button>
+      <button data-value="5">5</button>
+      <button data-value="6">6</button>
+      <button data-value="+">+</button>
+
+      <button data-value="1">1</button>
+      <button data-value="2">2</button>
+      <button data-value="3">3</button>
+      <button class="equal" data-action="calculate">=</button>
+
+      <button data-value="0">0</button>
+      <button data-value=".">.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.buttons button');
+
+    let input = '';
+
+    function updateDisplay() {
+      display.value = input;
+      console.log('Display updated:', input);
+    }
+
+    function appendValue(value) {
+      // Prevent multiple consecutive operators
+      const lastChar = input.slice(-1);
+      if ('+-*/'.includes(lastChar) && '+-*/'.includes(value)) return;
+      input += value;
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      input = '';
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      input = input.slice(0, -1);
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        // Simple validation: prevent eval on empty input or ending with operator
+        if (input === '' || '+-*/'.includes(input.slice(-1))) {
+          throw new Error('Invalid Expression');
+        }
+        const result = eval(input);
+        console.log('Calculation result:', result);
+        input = result.toString();
+        updateDisplay();
+      } catch (error) {
+        console.error('Calculation error:', error);
+        input = 'Error';
+        updateDisplay();
+      }
+    }
+
+    // Add event listeners dynamically
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.value) {
+          appendValue(btn.dataset.value);
+        } else if (btn.dataset.action) {
+          switch(btn.dataset.action) {
+            case 'clear': clearDisplay(); break;
+            case 'delete': deleteLast(); break;
+            case 'calculate': calculate(); break;
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
