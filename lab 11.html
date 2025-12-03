@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lab 10 - ES6 + JSON (Single File App)</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .product { border: 1px solid #ddd; padding: 10px; margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Product List</h1>
+
+  <label>
+    Filter by minimum price:
+    <input type="number" id="minPrice" value="0">
+  </label>
+  <button id="filterBtn">Apply Filter</button>
+
+  <button id="sortBtn">Sort by Price (Low → High)</button>
+
+  <div id="productList"></div>
+
+  <script>
+    // ------------------------------------------
+    //  ALL DATA + ALL CODE IN ONE FILE
+    // ------------------------------------------
+
+    // Simulated JSON data (instead of separate products.json file)
+    const productsData = [
+      { name: "Laptop", price: 999 },
+      { name: "Keyboard", price: 49 },
+      { name: "Mouse", price: 29 },
+      { name: "Monitor", price: 199 }
+    ];
+
+    // DOM elements
+    const listEl = document.getElementById("productList");
+    const filterBtn = document.getElementById("filterBtn");
+    const sortBtn = document.getElementById("sortBtn");
+    const minPriceInput = document.getElementById("minPrice");
+
+    let products = productsData; // Data loaded directly
+
+    // ES6 Arrow Function + Template Literals + Destructuring
+    const renderProducts = items => {
+      listEl.innerHTML = items
+        .map(({ name, price }) => `
+          <div class="product">
+            <strong>${name}</strong><br>
+            Price: $${price}
+          </div>
+        `)
+        .join("");
+    };
+
+    // Render initial product list
+    renderProducts(products);
+
+    // Filter functionality
+    filterBtn.addEventListener("click", () => {
+      const min = Number(minPriceInput.value);
+      const filtered = products.filter(({ price }) => price >= min);
+      renderProducts(filtered);
+    });
+
+    // Sorting functionality
+    sortBtn.addEventListener("click", () => {
+      const sorted = [...products].sort((a, b) => a.price - b.price);
+      renderProducts(sorted);
+    });
+
+  </script>
+
+</body>
+</html>
